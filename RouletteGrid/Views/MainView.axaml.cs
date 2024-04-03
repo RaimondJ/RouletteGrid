@@ -12,9 +12,14 @@ namespace RouletteGrid.Views;
 
 public partial class MainView : UserControl
 {
+    private const double FONT_SIZE = 24;
     private const int BASE_WIDTH = 55;
     private const int BASE_HEIGHT = 55;
+    private const int SPACE_IN_BETWEEN_RECTS = 5;
+    private IBrush GRID_NUMBERS_BORDER_COLOR = Brushes.Green;
+    private IBrush GRID_REGULAR_BORDER_COLOR = Brushes.White;
     private int[] redNumbers = { 1, 3, 5, 7, 9, 12, 14, 16, 18, 19, 21, 23, 25, 27, 30, 32, 34, 36 };
+
     public MainView()
     {
         InitializeComponent();
@@ -34,25 +39,25 @@ public partial class MainView : UserControl
 
         for (int i = 0; i < 3; i++)
         {
-            grid.RowDefinitions.Add(new RowDefinition(new GridLength(BASE_WIDTH + 5)));
+            grid.RowDefinitions.Add(new RowDefinition(new GridLength(BASE_WIDTH + SPACE_IN_BETWEEN_RECTS)));
         }
 
         for (int i = 0; i < 14; i++)
         {
-            grid.ColumnDefinitions.Add(new ColumnDefinition(new GridLength(BASE_WIDTH + 5)));
+            grid.ColumnDefinitions.Add(new ColumnDefinition(new GridLength(BASE_WIDTH + SPACE_IN_BETWEEN_RECTS)));
         }
 
 
-        firstDataGrid.RowDefinitions.Add(new RowDefinition(new GridLength(BASE_WIDTH + 5)));
+        firstDataGrid.RowDefinitions.Add(new RowDefinition(new GridLength(BASE_WIDTH + SPACE_IN_BETWEEN_RECTS)));
         for(int i = 0; i < 3; i++)
         {
-            firstDataGrid.ColumnDefinitions.Add(new ColumnDefinition(new GridLength((BASE_WIDTH + 5) * 4)));
+            firstDataGrid.ColumnDefinitions.Add(new ColumnDefinition(new GridLength((BASE_WIDTH + SPACE_IN_BETWEEN_RECTS) * 4)));
         }
 
-        secondDataGrid.RowDefinitions.Add(new RowDefinition(new GridLength(BASE_WIDTH + 5)));
+        secondDataGrid.RowDefinitions.Add(new RowDefinition(new GridLength(BASE_WIDTH + SPACE_IN_BETWEEN_RECTS)));
         for (int i = 0; i < 6; i++)
         {
-            secondDataGrid.ColumnDefinitions.Add(new ColumnDefinition(new GridLength((BASE_WIDTH + 5) * 2)));
+            secondDataGrid.ColumnDefinitions.Add(new ColumnDefinition(new GridLength((BASE_WIDTH + SPACE_IN_BETWEEN_RECTS) * 2)));
         }
 
         // Generate numbers from 0 to 36 on board grid
@@ -68,26 +73,31 @@ public partial class MainView : UserControl
         for (int i = 0; i < 6; i++)
         {
             string textStr = string.Empty;
-            if (i == 0)
-                textStr = "1 to 18";
-            else if (i == 1)
-                textStr = "Even";
-            else if (i == 2)
-                textStr = "";
-            else if (i == 3)
-                textStr = "";
-            else if (i == 4)
-                textStr = "Odd";
-            else if (i == 5)
-                textStr = "19 to 36";
+            switch (i)
+            {
+                case 0:
+                    textStr = "1 to 18";
+                    break;
+                case 1:
+                    textStr = "Even";
+                    break;
+                case 4:
+                    textStr = "Odd";
+                    break;
+                case 5:
+                    textStr = "19 to 36";
+                    break;
+                default:
+                    break;
+            }
 
             var rect = new Rectangle
             {
-                Width = BASE_WIDTH * 2 + 5,
-                Height = (BASE_WIDTH),
+                Width = (BASE_WIDTH + SPACE_IN_BETWEEN_RECTS) * 2,
+                Height = BASE_HEIGHT,
                 Fill = i == 3 ? Brushes.Red : Brushes.Black,
-                Stroke = Brushes.White,
-                StrokeThickness = 0.5
+                Stroke = GRID_REGULAR_BORDER_COLOR,
+                StrokeThickness = 0.5,
             };
 
             Grid.SetColumn(rect, i);
@@ -100,7 +110,7 @@ public partial class MainView : UserControl
                 {
                     Text = textStr,
                     Foreground = Brushes.White,
-                    FontSize = 24,
+                    FontSize = FONT_SIZE,
                     HorizontalAlignment = HorizontalAlignment.Center,
                     VerticalAlignment = VerticalAlignment.Center
                 };
@@ -123,10 +133,10 @@ public partial class MainView : UserControl
 
             var rect = new Rectangle
             {
-                Width = (BASE_WIDTH + 5) * 4,
-                Height = (BASE_WIDTH),
+                Width = (BASE_WIDTH + SPACE_IN_BETWEEN_RECTS) * 4,
+                Height = BASE_HEIGHT,
                 Fill = Brushes.Black,
-                Stroke = Brushes.White,
+                Stroke = GRID_REGULAR_BORDER_COLOR,
                 StrokeThickness = 0.5
             };
 
@@ -134,7 +144,7 @@ public partial class MainView : UserControl
             {
                 Text = textStr,
                 Foreground = Brushes.White,
-                FontSize = 24,
+                FontSize = FONT_SIZE,
                 HorizontalAlignment = HorizontalAlignment.Center,
                 VerticalAlignment = VerticalAlignment.Center
             };
@@ -154,9 +164,9 @@ public partial class MainView : UserControl
         var rectOfNr0 = new Rectangle
         {
             Width = BASE_WIDTH,
-            Height = (BASE_WIDTH + 5) * 3,
+            Height = (BASE_HEIGHT + SPACE_IN_BETWEEN_RECTS) * 3,
             Fill = Brushes.Green,
-            Stroke = Brushes.Green,
+            Stroke = GRID_NUMBERS_BORDER_COLOR,
             StrokeThickness = 1
         };
 
@@ -164,7 +174,7 @@ public partial class MainView : UserControl
         {
             Text = "0",
             Foreground = Brushes.White,
-            FontSize = 24,
+            FontSize = FONT_SIZE,
             HorizontalAlignment = HorizontalAlignment.Center,
             VerticalAlignment = VerticalAlignment.Center
         };
@@ -183,22 +193,24 @@ public partial class MainView : UserControl
             int beginNumber = 3 - row;
             for (int col = 1; col < 13; col++)
             {
+                bool isRed = redNumbers.Contains(beginNumber);
+
                 var rect = new Rectangle
                 {
                     Width = BASE_WIDTH,
                     Height = BASE_HEIGHT,
-                    MaxHeight = BASE_HEIGHT,
                     MaxWidth = BASE_WIDTH,
-                    Fill = redNumbers.Contains(beginNumber) ? Brushes.Red : Brushes.Black,
-                    Stroke = Brushes.Green,
+                    MaxHeight = BASE_HEIGHT,
+                    Fill = isRed ? Brushes.Red : Brushes.Black,
+                    Stroke = GRID_NUMBERS_BORDER_COLOR,
                     StrokeThickness = 1
                 };
 
                 var textBlock = new TextBlock
                 {
                     Text = beginNumber.ToString(),
-                    Foreground = redNumbers.Contains(beginNumber) ? Brushes.Black : Brushes.White,
-                    FontSize = 24, 
+                    Foreground = isRed ? Brushes.Black : Brushes.White,
+                    FontSize = FONT_SIZE, 
                     HorizontalAlignment = HorizontalAlignment.Center,
                     VerticalAlignment = VerticalAlignment.Center,
                 };
@@ -221,9 +233,9 @@ public partial class MainView : UserControl
             var rect = new Rectangle
             {
                 Width = BASE_WIDTH,
-                Height = (BASE_WIDTH),
+                Height = BASE_HEIGHT,
                 Fill = Brushes.Black,
-                Stroke = Brushes.White,
+                Stroke = GRID_REGULAR_BORDER_COLOR,
                 StrokeThickness = 0.5
             };
 
@@ -231,7 +243,7 @@ public partial class MainView : UserControl
             {
                 Text = "2to1",
                 Foreground = Brushes.White,
-                FontSize = 24,
+                FontSize = FONT_SIZE,
                 HorizontalAlignment = HorizontalAlignment.Center,
                 VerticalAlignment = VerticalAlignment.Center
             };
