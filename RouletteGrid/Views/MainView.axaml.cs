@@ -5,6 +5,7 @@ using Avalonia.Layout;
 using Avalonia.Markup.Xaml;
 using Avalonia.Media;
 using Avalonia.Media.Immutable;
+using DynamicData;
 using System;
 using System.Linq;
 
@@ -125,11 +126,11 @@ public partial class MainView : UserControl
     {
         for (int i = 0; i < 3; i++)
         {
-            string textStr = "1st12";
+            string textStr = "1st 12";
             if (i == 1)
-                textStr = "2nd12";
+                textStr = "2nd 12";
             else if (i == 2)
-                textStr = "3rd12";
+                textStr = "3rd 12";
 
             var rect = new Rectangle
             {
