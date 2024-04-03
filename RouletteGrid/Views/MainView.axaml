@@ -16,9 +16,12 @@
 		<StackPanel VerticalAlignment="Center">
 			<Grid Background="Black" ShowGridLines="False" HorizontalAlignment="Center" VerticalAlignment="Center"
 			  Name="RouletteGrid">
-				
-
-
+			</Grid>
+			<Grid Background="Black" ShowGridLines="False" HorizontalAlignment="Center" VerticalAlignment="Center"
+			  Name="FirstDataGrid">
+			</Grid>
+			<Grid Background="Black" ShowGridLines="False" HorizontalAlignment="Center" VerticalAlignment="Center"
+				Name="SecondDataGrid">
 			</Grid>
 		</StackPanel>
 		

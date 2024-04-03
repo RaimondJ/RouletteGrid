@@ -1,6 +1,7 @@
 ﻿using Avalonia;
 using Avalonia.Controls;
 using Avalonia.Controls.Shapes;
+using Avalonia.Layout;
 using Avalonia.Markup.Xaml;
 using Avalonia.Media;
 using Avalonia.Media.Immutable;
@@ -26,60 +27,44 @@ public partial class MainView : UserControl
 
     private void GenerateRouletteGrid()
     {
+        //Define rows and columns
         var grid = this.FindControl<Grid>("RouletteGrid");
+        var firstDataGrid = this.FindControl<Grid>("FirstDataGrid");
+        var secondDataGrid = this.FindControl<Grid>("SecondDataGrid");
 
         for (int i = 0; i < 3; i++)
+        {
             grid.RowDefinitions.Add(new RowDefinition(new GridLength(BASE_WIDTH + 5)));
-
+        }
 
         for (int i = 0; i < 14; i++)
+        {
             grid.ColumnDefinitions.Add(new ColumnDefinition(new GridLength(BASE_WIDTH + 5)));
+        }
 
-        grid.RowDefinitions.Add(new RowDefinition(new GridLength(BASE_WIDTH + 10)));
-        grid.RowDefinitions.Add(new RowDefinition(new GridLength(BASE_WIDTH + 10)));
+
+        firstDataGrid.RowDefinitions.Add(new RowDefinition(new GridLength(BASE_WIDTH + 5)));
+        for(int i = 0; i < 3; i++)
+        {
+            firstDataGrid.ColumnDefinitions.Add(new ColumnDefinition(new GridLength((BASE_WIDTH + 5) * 4)));
+        }
+
+        secondDataGrid.RowDefinitions.Add(new RowDefinition(new GridLength(BASE_WIDTH + 5)));
+        for (int i = 0; i < 6; i++)
+        {
+            secondDataGrid.ColumnDefinitions.Add(new ColumnDefinition(new GridLength((BASE_WIDTH + 5) * 2)));
+        }
 
         // Generate numbers from 0 to 36 on board grid
         GenerateGridNumbers(grid);
 
-        for (int i = 0; i < 3; i++)
-        {
-            string textStr = "1st12";
-            if (i == 1)
-                textStr = "2nd12";
-            else if (i == 2)
-                textStr = "3rd12";
+        //Generate other data showing grids
+        GenerateFirstDataGrid(firstDataGrid);
+        GenerateSecondDataGrid(secondDataGrid);
+    }
 
-            var canvas = new Canvas();
-            var rect = new Rectangle
-            {
-                Width = BASE_WIDTH * 4 + 16,
-                Height = (BASE_WIDTH),
-                Fill = Brushes.Black,
-                Stroke = Brushes.White,
-                StrokeThickness = 0.5
-            };
-
-            var text = new TextBlock
-            {
-                Text = textStr,
-                Foreground = Brushes.White,
-                FontSize = 24
-            };
-
-            Canvas.SetTop(rect, 0);
-            Canvas.SetLeft(rect, 0);
-            Canvas.SetTop(text, BASE_WIDTH / 5);
-            Canvas.SetLeft(text, BASE_WIDTH * 1.6);
-
-            canvas.Children.Add(rect);
-            canvas.Children.Add(text);
-
-            Grid.SetColumn(canvas, i * 4 + 1);
-            Grid.SetRow(canvas, 3);
-
-            grid.Children.Add(canvas);
-        }
-
+    private void GenerateSecondDataGrid(Grid grid)
+    {
         for (int i = 0; i < 6; i++)
         {
             string textStr = string.Empty;
@@ -96,19 +81,18 @@ public partial class MainView : UserControl
             else if (i == 5)
                 textStr = "19 to 36";
 
-            var canvas = new Canvas();
             var rect = new Rectangle
             {
-                Width = BASE_WIDTH * 2 + 6,
+                Width = BASE_WIDTH * 2 + 5,
                 Height = (BASE_WIDTH),
                 Fill = i == 3 ? Brushes.Red : Brushes.Black,
                 Stroke = Brushes.White,
                 StrokeThickness = 0.5
             };
 
-            Canvas.SetTop(rect, 0);
-            Canvas.SetLeft(rect, 0);
-            canvas.Children.Add(rect);
+            Grid.SetColumn(rect, i);
+            Grid.SetRow(rect, 0);
+            grid.Children.Add(rect);
 
             if (textStr != string.Empty)
             {
@@ -116,25 +100,30 @@ public partial class MainView : UserControl
                 {
                     Text = textStr,
                     Foreground = Brushes.White,
-                    FontSize = 24
+                    FontSize = 24,
+                    HorizontalAlignment = HorizontalAlignment.Center,
+                    VerticalAlignment = VerticalAlignment.Center
                 };
-                Canvas.SetTop(text, BASE_WIDTH / 5);
-                Canvas.SetLeft(text, BASE_WIDTH / 3.2);
-                canvas.Children.Add(text);
+                Grid.SetColumn(text, i);
+                Grid.SetRow(text, 0);
+                grid.Children.Add(text);
             }
-
-            Grid.SetColumn(canvas, i * 2 + 1);
-            Grid.SetRow(canvas, 4);
-
-            grid.Children.Add(canvas);
         }
+    }
 
+    private void GenerateFirstDataGrid(Grid grid)
+    {
         for (int i = 0; i < 3; i++)
         {
-            var canvas = new Canvas();
+            string textStr = "1st12";
+            if (i == 1)
+                textStr = "2nd12";
+            else if (i == 2)
+                textStr = "3rd12";
+
             var rect = new Rectangle
             {
-                Width = BASE_WIDTH,
+                Width = (BASE_WIDTH + 5) * 4,
                 Height = (BASE_WIDTH),
                 Fill = Brushes.Black,
                 Stroke = Brushes.White,
@@ -143,33 +132,25 @@ public partial class MainView : UserControl
 
             var text = new TextBlock
             {
-                Text = "2to1",
+                Text = textStr,
                 Foreground = Brushes.White,
-                FontSize = 24
-
+                FontSize = 24,
+                HorizontalAlignment = HorizontalAlignment.Center,
+                VerticalAlignment = VerticalAlignment.Center
             };
 
-            var rotateTransform = new RotateTransform { Angle = 90 };
-            text.RenderTransform = rotateTransform;
+            Grid.SetColumn(rect, i);
+            Grid.SetRow(rect, 0);
+            Grid.SetColumn(text, i);
+            Grid.SetRow(text, 0);
 
-            Canvas.SetTop(rect, 0);
-            Canvas.SetLeft(rect, 0);
-            Canvas.SetTop(text, BASE_WIDTH / 5);
-            Canvas.SetLeft(text, BASE_WIDTH / 7);
-
-            canvas.Children.Add(rect);
-            canvas.Children.Add(text);
-
-            Grid.SetColumn(canvas, 13);
-            Grid.SetRow(canvas, i);
-
-            grid.Children.Add(canvas);
+            grid.Children.Add(rect);
+            grid.Children.Add(text);
         }
     }
 
     private void GenerateGridNumbers(Grid grid)
     {
-        var canvasOfNr0 = new Canvas();
         var rectOfNr0 = new Rectangle
         {
             Width = BASE_WIDTH,
@@ -183,21 +164,18 @@ public partial class MainView : UserControl
         {
             Text = "0",
             Foreground = Brushes.White,
-            FontSize = 24
+            FontSize = 24,
+            HorizontalAlignment = HorizontalAlignment.Center,
+            VerticalAlignment = VerticalAlignment.Center
         };
 
-        Canvas.SetTop(rectOfNr0, 0);
-        Canvas.SetLeft(rectOfNr0, 0);
-        Canvas.SetTop(textBlockOfNr0, ((BASE_WIDTH + 5) * 3) / 4);
-        Canvas.SetLeft(textBlockOfNr0, BASE_WIDTH / 4);
+        Grid.SetColumn(rectOfNr0, 0);
+        Grid.SetRow(rectOfNr0, 1);
+        Grid.SetColumn(textBlockOfNr0, 0);
+        Grid.SetRow(textBlockOfNr0, 1);
 
-        canvasOfNr0.Children.Add(rectOfNr0);
-        canvasOfNr0.Children.Add(textBlockOfNr0);
-
-        Grid.SetColumn(canvasOfNr0, 0);
-        Grid.SetRow(canvasOfNr0, 0);
-
-        grid.Children.Add(canvasOfNr0);
+        grid.Children.Add(rectOfNr0);
+        grid.Children.Add(textBlockOfNr0);
 
         int count = 1;
         for (int row = 0; row < 3; row++)
@@ -205,8 +183,6 @@ public partial class MainView : UserControl
             int beginNumber = 3 - row;
             for (int col = 1; col < 13; col++)
             {
-                var canvas = new Canvas();
-
                 var rect = new Rectangle
                 {
                     Width = BASE_WIDTH,
@@ -222,25 +198,54 @@ public partial class MainView : UserControl
                 {
                     Text = beginNumber.ToString(),
                     Foreground = redNumbers.Contains(beginNumber) ? Brushes.Black : Brushes.White,
-                    FontSize = 24
+                    FontSize = 24, 
+                    HorizontalAlignment = HorizontalAlignment.Center,
+                    VerticalAlignment = VerticalAlignment.Center,
                 };
 
-                Canvas.SetTop(rect, 0);
-                Canvas.SetLeft(rect, 0);
-                Canvas.SetTop(textBlock, BASE_WIDTH / 4);
-                Canvas.SetLeft(textBlock, BASE_WIDTH / 4);
+                Grid.SetRow(rect, row);
+                Grid.SetColumn(rect, col);
+                Grid.SetRow(textBlock, row);
+                Grid.SetColumn(textBlock, col);
 
-                canvas.Children.Add(rect);
-                canvas.Children.Add(textBlock);
-
-                Grid.SetRow(canvas, row);
-                Grid.SetColumn(canvas, col);
-
-                grid.Children.Add(canvas);
+                grid.Children.Add(rect);
+                grid.Children.Add(textBlock);
 
                 count++;
                 beginNumber += 3;
             }
+        }
+
+        for (int i = 0; i < 3; i++)
+        {
+            var rect = new Rectangle
+            {
+                Width = BASE_WIDTH,
+                Height = (BASE_WIDTH),
+                Fill = Brushes.Black,
+                Stroke = Brushes.White,
+                StrokeThickness = 0.5
+            };
+
+            var text = new TextBlock
+            {
+                Text = "2to1",
+                Foreground = Brushes.White,
+                FontSize = 24,
+                HorizontalAlignment = HorizontalAlignment.Center,
+                VerticalAlignment = VerticalAlignment.Center
+            };
+
+            var rotateTransform = new RotateTransform { Angle = 90 };
+            text.RenderTransform = rotateTransform;
+
+            Grid.SetColumn(rect, 13);
+            Grid.SetRow(rect, i);
+            Grid.SetColumn(text, 13);
+            Grid.SetRow(text, i);
+
+            grid.Children.Add(rect);
+            grid.Children.Add(text);
         }
     }
 }
