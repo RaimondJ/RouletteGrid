@@ -32,87 +32,14 @@ public partial class MainView : UserControl
             grid.RowDefinitions.Add(new RowDefinition(new GridLength(BASE_WIDTH + 5)));
 
 
-        for (int i = 0; i < 13; i++)
+        for (int i = 0; i < 14; i++)
             grid.ColumnDefinitions.Add(new ColumnDefinition(new GridLength(BASE_WIDTH + 5)));
 
         grid.RowDefinitions.Add(new RowDefinition(new GridLength(BASE_WIDTH + 10)));
         grid.RowDefinitions.Add(new RowDefinition(new GridLength(BASE_WIDTH + 10)));
 
-        var canvasOfNr0 = new Canvas();
-        var rectOfNr0 = new Rectangle
-        {
-            Width = BASE_WIDTH,
-            Height = (BASE_WIDTH + 5) * 3,
-            Fill = Brushes.Green,
-            Stroke = Brushes.Green,
-            StrokeThickness = 1
-        };
-
-        var textBlockOfNr0 = new TextBlock
-        {
-            Text = "0",
-            Foreground = Brushes.White,
-            FontSize = 24
-        };
-
-        Canvas.SetTop(rectOfNr0, 0);
-        Canvas.SetLeft(rectOfNr0, 0);
-        Canvas.SetTop(textBlockOfNr0, ((BASE_WIDTH + 5) * 3) / 4);
-        Canvas.SetLeft(textBlockOfNr0, BASE_WIDTH / 4);
-
-        canvasOfNr0.Children.Add(rectOfNr0);
-        canvasOfNr0.Children.Add(textBlockOfNr0);
-
-        Grid.SetColumn(canvasOfNr0, 0);
-        Grid.SetRow(canvasOfNr0, 0);
-
-        grid.Children.Add(canvasOfNr0);
-
-
-        // Generate numbers from 1 to 36 on board grid
-        int count = 1;
-        for (int row = 0; row < 3; row++)
-        {
-            int beginNumber = 3 - row;
-            for (int col = 1; col < 13; col++)
-            {
-                var canvas = new Canvas();
-
-                var rect = new Rectangle
-                {
-                    Width = BASE_WIDTH,
-                    Height = BASE_HEIGHT,
-                    MaxHeight = BASE_HEIGHT,
-                    MaxWidth = BASE_WIDTH,
-                    Fill = redNumbers.Contains(beginNumber) ? Brushes.Red : Brushes.Black,
-                    Stroke = Brushes.Green,
-                    StrokeThickness = 1
-                };
-
-                var textBlock = new TextBlock
-                {
-                    Text = beginNumber.ToString(),
-                    Foreground = redNumbers.Contains(beginNumber) ? Brushes.Black : Brushes.White,
-                    FontSize = 24
-                };
-
-                Canvas.SetTop(rect, 0);
-                Canvas.SetLeft(rect, 0);
-                Canvas.SetTop(textBlock, BASE_WIDTH / 4);
-                Canvas.SetLeft(textBlock, BASE_WIDTH / 4);
-
-                canvas.Children.Add(rect);
-                canvas.Children.Add(textBlock);
-
-                Grid.SetRow(canvas, row);
-                Grid.SetColumn(canvas, col);
-
-                grid.Children.Add(canvas);
-
-                count++;
-                beginNumber += 3;
-            }
-        }
+        // Generate numbers from 0 to 36 on board grid
+        GenerateGridNumbers(grid);
 
         for (int i = 0; i < 3; i++)
         {
@@ -159,13 +86,13 @@ public partial class MainView : UserControl
             if (i == 0)
                 textStr = "1 to 18";
             else if (i == 1)
-                textStr = "even";
+                textStr = "Even";
             else if (i == 2)
                 textStr = "";
             else if (i == 3)
                 textStr = "";
             else if (i == 4)
-                textStr = "odd";
+                textStr = "Odd";
             else if (i == 5)
                 textStr = "19 to 36";
 
@@ -178,9 +105,6 @@ public partial class MainView : UserControl
                 Stroke = Brushes.White,
                 StrokeThickness = 0.5
             };
-
-
-           
 
             Canvas.SetTop(rect, 0);
             Canvas.SetLeft(rect, 0);
@@ -203,6 +127,120 @@ public partial class MainView : UserControl
             Grid.SetRow(canvas, 4);
 
             grid.Children.Add(canvas);
+        }
+
+        for (int i = 0; i < 3; i++)
+        {
+            var canvas = new Canvas();
+            var rect = new Rectangle
+            {
+                Width = BASE_WIDTH,
+                Height = (BASE_WIDTH),
+                Fill = Brushes.Black,
+                Stroke = Brushes.White,
+                StrokeThickness = 0.5
+            };
+
+            var text = new TextBlock
+            {
+                Text = "2to1",
+                Foreground = Brushes.White,
+                FontSize = 24
+
+            };
+
+            var rotateTransform = new RotateTransform { Angle = 90 };
+            text.RenderTransform = rotateTransform;
+
+            Canvas.SetTop(rect, 0);
+            Canvas.SetLeft(rect, 0);
+            Canvas.SetTop(text, BASE_WIDTH / 5);
+            Canvas.SetLeft(text, BASE_WIDTH / 7);
+
+            canvas.Children.Add(rect);
+            canvas.Children.Add(text);
+
+            Grid.SetColumn(canvas, 13);
+            Grid.SetRow(canvas, i);
+
+            grid.Children.Add(canvas);
+        }
+    }
+
+    private void GenerateGridNumbers(Grid grid)
+    {
+        var canvasOfNr0 = new Canvas();
+        var rectOfNr0 = new Rectangle
+        {
+            Width = BASE_WIDTH,
+            Height = (BASE_WIDTH + 5) * 3,
+            Fill = Brushes.Green,
+            Stroke = Brushes.Green,
+            StrokeThickness = 1
+        };
+
+        var textBlockOfNr0 = new TextBlock
+        {
+            Text = "0",
+            Foreground = Brushes.White,
+            FontSize = 24
+        };
+
+        Canvas.SetTop(rectOfNr0, 0);
+        Canvas.SetLeft(rectOfNr0, 0);
+        Canvas.SetTop(textBlockOfNr0, ((BASE_WIDTH + 5) * 3) / 4);
+        Canvas.SetLeft(textBlockOfNr0, BASE_WIDTH / 4);
+
+        canvasOfNr0.Children.Add(rectOfNr0);
+        canvasOfNr0.Children.Add(textBlockOfNr0);
+
+        Grid.SetColumn(canvasOfNr0, 0);
+        Grid.SetRow(canvasOfNr0, 0);
+
+        grid.Children.Add(canvasOfNr0);
+
+        int count = 1;
+        for (int row = 0; row < 3; row++)
+        {
+            int beginNumber = 3 - row;
+            for (int col = 1; col < 13; col++)
+            {
+                var canvas = new Canvas();
+
+                var rect = new Rectangle
+                {
+                    Width = BASE_WIDTH,
+                    Height = BASE_HEIGHT,
+                    MaxHeight = BASE_HEIGHT,
+                    MaxWidth = BASE_WIDTH,
+                    Fill = redNumbers.Contains(beginNumber) ? Brushes.Red : Brushes.Black,
+                    Stroke = Brushes.Green,
+                    StrokeThickness = 1
+                };
+
+                var textBlock = new TextBlock
+                {
+                    Text = beginNumber.ToString(),
+                    Foreground = redNumbers.Contains(beginNumber) ? Brushes.Black : Brushes.White,
+                    FontSize = 24
+                };
+
+                Canvas.SetTop(rect, 0);
+                Canvas.SetLeft(rect, 0);
+                Canvas.SetTop(textBlock, BASE_WIDTH / 4);
+                Canvas.SetLeft(textBlock, BASE_WIDTH / 4);
+
+                canvas.Children.Add(rect);
+                canvas.Children.Add(textBlock);
+
+                Grid.SetRow(canvas, row);
+                Grid.SetColumn(canvas, col);
+
+                grid.Children.Add(canvas);
+
+                count++;
+                beginNumber += 3;
+            }
         }
     }
 }
