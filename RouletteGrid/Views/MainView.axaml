@@ -14,14 +14,24 @@
   </Design.DataContext>
 	<Border Background="Black" BorderBrush="Brown" BorderThickness="20" Padding="3">
 		<StackPanel VerticalAlignment="Center">
-			<Grid Background="Black" ShowGridLines="False" HorizontalAlignment="Center" VerticalAlignment="Center"
-			  Name="RouletteGrid">
+			<Viewbox Stretch="Uniform" Grid.Column="0" Name="RouletteViewBox">
+				<Grid Background="Black" ShowGridLines="False" HorizontalAlignment="Center" VerticalAlignment="Center"
+			  		Name="RouletteGrid">
+				</Grid>
+			</Viewbox>
+			<Grid Name="FirstDataGridLayout">
+				<Viewbox Stretch="Uniform" Grid.Column="1" Name="FirstDataViewBox">
+					<Grid Background="Black" ShowGridLines="False" HorizontalAlignment="Center" VerticalAlignment="Center"
+					Name="FirstDataGrid">
+					</Grid>
+				</Viewbox>
 			</Grid>
-			<Grid Background="Black" ShowGridLines="False" HorizontalAlignment="Center" VerticalAlignment="Center"
-			  Name="FirstDataGrid">
-			</Grid>
-			<Grid Background="Black" ShowGridLines="False" HorizontalAlignment="Center" VerticalAlignment="Center"
-				Name="SecondDataGrid">
+			<Grid Name="SecondDataGridLayout">
+				<Viewbox Stretch="Uniform" Grid.Column="1" Name="SecondDataViewBox">
+					<Grid Background="Black" ShowGridLines="False" HorizontalAlignment="Center" VerticalAlignment="Center"
+						Name="SecondDataGrid">
+					</Grid>
+				</Viewbox>
 			</Grid>
 		</StackPanel>
 		

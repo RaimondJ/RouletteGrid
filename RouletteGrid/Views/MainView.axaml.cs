@@ -5,14 +5,17 @@ using Avalonia.Layout;
 using Avalonia.Markup.Xaml;
 using Avalonia.Media;
 using Avalonia.Media.Immutable;
+using Avalonia.VisualTree;
 using DynamicData;
 using System;
+using System.Diagnostics;
 using System.Linq;
 
 namespace RouletteGrid.Views;
 
 public partial class MainView : UserControl
 {
+    private const int MAX_GRID_WIDTH = 900;
     private const double FONT_SIZE = 24;
     private const int BASE_WIDTH = 55;
     private const int BASE_HEIGHT = 55;
@@ -33,7 +36,23 @@ public partial class MainView : UserControl
 
     private void GenerateRouletteGrid()
     {
+        var firstDataGridLayout = this.FindControl<Grid>("FirstDataGridLayout");
+        var secondDataGridLayout = this.FindControl<Grid>("SecondDataGridLayout");
+
+        firstDataGridLayout.ColumnDefinitions.Add(new ColumnDefinition());
+
+        secondDataGridLayout.ColumnDefinitions.Add(new ColumnDefinition());        
+
+
         //Define rows and columns
+        var rouletteViewBox = this.FindControl<Viewbox>("RouletteViewBox");
+        var firstDataViewBox = this.FindControl<Viewbox>("FirstDataViewBox");
+        var secondDataViewBox = this.FindControl<Viewbox>("SecondDataViewBox");
+
+        rouletteViewBox.MaxWidth = MAX_GRID_WIDTH;
+        firstDataViewBox.MaxWidth = MAX_GRID_WIDTH - 2 * (BASE_WIDTH + SPACE_IN_BETWEEN_RECTS);
+        secondDataViewBox.MaxWidth = MAX_GRID_WIDTH - 2 * (BASE_WIDTH + SPACE_IN_BETWEEN_RECTS);
+
         var grid = this.FindControl<Grid>("RouletteGrid");
         var firstDataGrid = this.FindControl<Grid>("FirstDataGrid");
         var secondDataGrid = this.FindControl<Grid>("SecondDataGrid");
@@ -70,7 +89,7 @@ public partial class MainView : UserControl
     }
 
     private void GenerateSecondDataGrid(Grid grid)
-    {
+    {        
         for (int i = 0; i < 6; i++)
         {
             string textStr = string.Empty;
@@ -91,7 +110,7 @@ public partial class MainView : UserControl
                 default:
                     break;
             }
-
+            
             var rect = new Rectangle
             {
                 Width = (BASE_WIDTH + SPACE_IN_BETWEEN_RECTS) * 2,
@@ -104,7 +123,7 @@ public partial class MainView : UserControl
             Grid.SetColumn(rect, i);
             Grid.SetRow(rect, 0);
             grid.Children.Add(rect);
-
+            
             if (textStr != string.Empty)
             {
                 var text = new TextBlock
